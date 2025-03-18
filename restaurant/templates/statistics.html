@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Restaurant Statistics</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Restaurants by Cuisine Type</h5>
+                    <img src="data:image/png;base64,{{ graphic_cuisine }}" class="img-fluid" alt="Restaurants by Cuisine Type">
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Restaurants by City</h5>
+                    <img src="data:image/png;base64,{{ graphic_city }}" class="img-fluid" alt="Restaurants by City">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

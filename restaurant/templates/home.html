@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5 mb-5">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-4">Welcome to EatFit</h1>
+        <p class="lead mb-5">Discover healthy and delicious restaurants near you</p>
+        
+        <!-- Search Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form action="" method="GET" class="search-form">
+                    <div class="input-group input-group-lg">
+                        <input type="text" name="searchRestaurant" 
+                               class="form-control border-2" 
+                               placeholder="Search restaurants by name, cuisine, or location..." 
+                               value="{{ searchTerm }}">
+                        <button class="btn btn-primary px-4" type="submit">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Restaurants Section -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title">{% if searchTerm %}Search Results{% else %}Featured Restaurants{% endif %}</h2>
+        <a href="/admin/restaurant/restaurant/" class="btn btn-outline-primary">
+            <i class="fas fa-cog"></i> Manage Restaurants
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for restaurant in restaurants %}
+            <div class="col-md-6 col-lg-4">
+                <div class="restaurant-card card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-img-container">
+                        {% if restaurant.image %}
+                            <img src="{{ restaurant.image.url }}" class="card-img-top" alt="{{ restaurant.name }}">
+                        {% else %}
+                            <div class="placeholder-img">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                        {% endif %}
+                        {% if restaurant.cuisine_type %}
+                            <span class="cuisine-badge">{{ restaurant.cuisine_type }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h3 class="card-title h5 mb-0">{{ restaurant.name }}</h3>
+                            <span class="rating">
+                                <i class="fas fa-star text-warning"></i>
+                                {{ restaurant.rating }}
+                            </span>
+                        </div>
+                        {% if restaurant.description %}
+                            <p class="card-text text-muted small mb-3">{{ restaurant.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        <div class="restaurant-info">
+                            {% if restaurant.city %}
+                                <span class="info-item">
+                                    <i class="fas fa-map-marker-alt text-primary"></i> {{ restaurant.city }}
+                                </span>
+                            {% endif %}
+                            {% if restaurant.opening_hours %}
+                                <span class="info-item">
+                                    <i class="fas fa-clock text-primary"></i> {{ restaurant.opening_hours }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn btn-outline-primary w-100 mt-3">
+                            View Menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center py-4">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h4>No restaurants found</h4>
+                    <p class="mb-0">Try adjusting your search criteria or browse all restaurants.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    :root {
+        --dark-bg: #1a1a1a;
+        --dark-card: #242424;
+        --dark-hover: #2d2d2d;
+        --dark-text: #ffffff;
+        --dark-text-muted: #a0a0a0;
+        --accent-color: #00c853;
+        --accent-hover: #00e676;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+    }
+
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        padding: 80px 0;
+        margin-top: -1.5rem;
+    }
+
+    .lead {
+        color: var(--dark-text-muted);
+    }
+
+    .search-form .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        background-color: var(--dark-card);
+        border-color: var(--accent-color);
+        color: var(--dark-text);
+    }
+
+    .search-form .form-control:focus {
+        background-color: var(--dark-card);
+        color: var(--dark-text);
+        box-shadow: 0 0 0 0.25rem rgba(0, 200, 83, 0.25);
+    }
+
+    .search-form .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+
+    .search-form .btn:hover {
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
+    }
+
+    /* Restaurant Card Styles */
+    .restaurant-card {
+        background-color: var(--dark-card);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .restaurant-card .card-title {
+        color: var(--dark-text);
+        font-weight: 600;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 200, 83, 0.15) !important;
+        background-color: var(--dark-hover);
+    }
+
+    .card-img-container {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .card-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .hover-card:hover .card-img-container img {
+        transform: scale(1.05);
+    }
+
+    .placeholder-img {
+        height: 100%;
+        background: linear-gradient(45deg, #242424, #2d2d2d);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .placeholder-img i {
+        font-size: 3rem;
+        color: var(--accent-color);
+    }
+
+    .cuisine-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0, 200, 83, 0.9);
+        color: var(--dark-text);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .rating {
+        background: var(--dark-card);
+        color: var(--dark-text);
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .restaurant-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .info-item {
+        color: var(--dark-text-muted);
+    }
+
+    .info-item i {
+        margin-right: 5px;
+        color: var(--accent-color);
+    }
+
+    .section-title {
+        position: relative;
+        padding-bottom: 10px;
+        color: var(--dark-text);
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--accent-color);
+        border-radius: 2px;
+    }
+
+    .btn-outline-primary {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: var(--dark-text);
+    }
+
+    .text-muted {
+        color: var(--dark-text-muted) !important;
+    }
+
+    .alert-info {
+        background-color: var(--dark-card);
+        border-color: var(--accent-color);
+        color: var(--dark-text);
+    }
+</style>
+{% endblock %}
